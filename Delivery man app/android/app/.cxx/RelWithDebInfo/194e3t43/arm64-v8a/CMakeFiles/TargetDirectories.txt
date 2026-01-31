@@ -1,0 +1,2 @@
+/Users/karna/Downloads/Projects/bluverzipfile/Delivery man app/android/app/.cxx/RelWithDebInfo/194e3t43/arm64-v8a/CMakeFiles/edit_cache.dir
+/Users/karna/Downloads/Projects/bluverzipfile/Delivery man app/android/app/.cxx/RelWithDebInfo/194e3t43/arm64-v8a/CMakeFiles/rebuild_cache.dir

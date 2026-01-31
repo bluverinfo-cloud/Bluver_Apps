@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "468760860794",
+    "project_id": "bluvernew",
+    "storage_bucket": "bluvernew.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:468760860794:android:72445101604a92953683c3",
+        "android_client_info": {
+          "package_name": "com.bluver.restaurantapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCxJA7Hyopymz7WETN4GYAlcEKJeoPuOxk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:468760860794:android:109017a1bff734bd3683c3",
+        "android_client_info": {
+          "package_name": "com.bluver.userapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCxJA7Hyopymz7WETN4GYAlcEKJeoPuOxk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
