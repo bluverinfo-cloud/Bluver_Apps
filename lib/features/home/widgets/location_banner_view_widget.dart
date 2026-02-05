@@ -1,11 +1,10 @@
-import 'package:stackfood_multivendor/common/widgets/custom_asset_image_widget.dart';
-import 'package:stackfood_multivendor/features/splash/controllers/theme_controller.dart';
-import 'package:stackfood_multivendor/helper/responsive_helper.dart';
-import 'package:stackfood_multivendor/helper/route_helper.dart';
-import 'package:stackfood_multivendor/util/dimensions.dart';
-import 'package:stackfood_multivendor/util/images.dart';
-import 'package:stackfood_multivendor/util/styles.dart';
-import 'package:stackfood_multivendor/common/widgets/custom_button_widget.dart';
+import 'package:demandium/feature/splash/controller/theme_controller.dart';
+import 'package:demandium/helper/responsive_helper.dart';
+import 'package:demandium/helper/route_helper.dart';
+import 'package:demandium/utils/dimensions.dart';
+import 'package:demandium/utils/images.dart';
+import 'package:demandium/utils/styles.dart';
+import 'package:demandium/common/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -15,10 +14,10 @@ class LocationBannerViewWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: ResponsiveHelper.isMobile(context) ? Dimensions.paddingSizeDefault : 0, vertical: ResponsiveHelper.isMobile(context) ? Dimensions.paddingSizeSmall : Dimensions.paddingSizeLarge),
+      padding: EdgeInsets.symmetric(horizontal: ResponsiveHelper.isMobile(context) ? Dimensions.paddingSizeDefault : 0, vertical: ResponsiveHelper.isMobile(context) ? Dimensions.paddingSizeDefault : Dimensions.paddingSizeLarge),
       child: Container(
-        padding: EdgeInsets.all(ResponsiveHelper.isMobile(context) ? Dimensions.paddingSizeSmall : Dimensions.paddingSizeLarge),
-        height: ResponsiveHelper.isMobile(context) ? 120 : 147,
+        padding: EdgeInsets.all(ResponsiveHelper.isMobile(context) ? 0 : Dimensions.paddingSizeLarge),
+        height: ResponsiveHelper.isMobile(context) ? 110 : 147,
         decoration: BoxDecoration(
           //color: Theme.of(context).primaryColor.withValues(alpha: Get.find<ThemeController>().darkTheme ? 0.5 : 0.1),
           gradient: LinearGradient(
@@ -37,7 +36,7 @@ class LocationBannerViewWidget extends StatelessWidget {
           SizedBox(width: ResponsiveHelper.isMobile(context) ? Dimensions.paddingSizeExtraSmall : 0),
           Expanded(
             child: Row(children: [
-              CustomAssetImageWidget(Images.nearbyRestaurant, height: ResponsiveHelper.isMobile(context) ? 60 : 93, width: ResponsiveHelper.isMobile(context) ? 74 : 119, fit: BoxFit.contain),
+              Image.asset(Images.mapLocation, height: ResponsiveHelper.isMobile(context) ? 60 : 93, width: ResponsiveHelper.isMobile(context) ? 74 : 119, fit: BoxFit.contain),
               SizedBox(width: ResponsiveHelper.isMobile(context) ? Dimensions.paddingSizeSmall : Dimensions.paddingSizeLarge),
 
               Flexible(
@@ -63,21 +62,21 @@ class LocationBannerViewWidget extends StatelessWidget {
             SizedBox(height: 20),
 
             Stack(clipBehavior: Clip.none, children: [
-              CustomButtonWidget(
+              CustomButton(
                 buttonText: 'see_location'.tr,
                 width: ResponsiveHelper.isMobile(context) ? 90 : 120,
                 height: ResponsiveHelper.isMobile(context) ? 35 : 40,
                 fontSize: Dimensions.fontSizeSmall,
                 radius: Dimensions.radiusDefault,
-                onPressed: ()=> Get.toNamed(RouteHelper.getMapViewRoute()),
+                onPressed: ()=> Get.toNamed(RouteHelper.getPickMapRoute('location', true, 'false', null, null)),
               ),
 
               Positioned(
                 top: ResponsiveHelper.isDesktop(context) ? -30 : -25, right: 0, left: 0,
                 child: SizedBox(
                   height: 40, width: 40,
-                  child: CustomAssetImageWidget(
-                    Images.nearbyLocation,
+                  child: Image.asset(
+                    Images.iconLocation,
                     height: 40,
                     width: 40, fit: BoxFit.contain,
                   ),

@@ -23,7 +23,7 @@ class _WebLandingSearchSectionState extends State<WebLandingSearchSection> {
   Widget build(BuildContext context) {
     return GetBuilder<WebLandingController>(
       builder: (webLandingController){
-        return Stack(
+        return Column(
           children: [
             Container(
               width: Dimensions.webMaxWidth,
@@ -32,15 +32,39 @@ class _WebLandingSearchSectionState extends State<WebLandingSearchSection> {
                 color: Get.isDarkMode?Theme.of(context).primaryColorDark:Theme.of(context).colorScheme.primary,
               ),
               child: Padding(
-                padding: const EdgeInsets.all(Dimensions.paddingSizeDefault).copyWith(left: 300),
-                child: Directionality(
-                  textDirection: TextDirection.ltr,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
+                padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
+                child: Column(
+                  children: [
+                    // Title and Description Section
+                    if(widget.textContent?['web_top_title'] != null && widget.textContent?['web_top_title'] != '')
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault, vertical: Dimensions.paddingSizeLarge),
+                      child: Column(
+                        children: [
+                          Text(widget.textContent?['web_top_title'] ?? "",
+                            style: robotoBold.copyWith(fontSize: Dimensions.fontSizeOverLarge, color: Colors.white),
+                            textAlign: TextAlign.center,
+                            maxLines: 2, overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 15.0,),
+                          if(widget.textContent?['web_top_description'] != null && widget.textContent?['web_top_description'] != '')
+                          Text(widget.textContent?['web_top_description'] ?? "",
+                            maxLines: 2, overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.center,
+                            style: robotoMedium.copyWith(
+                              fontSize: Dimensions.fontSizeDefault,
+                              color: Colors.white70,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: Dimensions.paddingSizeDefault),
+                    // Images Section - All same size
+                    Directionality(
+                      textDirection: TextDirection.ltr,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           //first image
                           Container(
@@ -48,139 +72,115 @@ class _WebLandingSearchSectionState extends State<WebLandingSearchSection> {
                               border: Border(
                                 top: BorderSide(width: 2.0, color: Colors.white),
                                 left: BorderSide(width: 2.0, color: Colors.white),
-                                right: BorderSide(width: 2.0, color: Colors.white),
+                                bottom: BorderSide(width: 2.0, color: Colors.white),
+                              ),
+                            ),
+                            child: ClipRRect(
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(12.0),
+                                  bottomLeft: Radius.circular(12.0),
+                                ),
+                                child: CustomImage(
+                                  height: 200,
+                                  width: 370,
+                                  fit: BoxFit.cover,
+                                  image: webLandingController.webLandingContent!.topImage1 ?? "")),
+                          ),
+                          //second image
+                          Container(
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                              border: Border(
+                                top: BorderSide(width: 2.0, color: Colors.white),
+                                bottom: BorderSide(width: 2.0, color: Colors.white),
                               ),
                             ),
                             child: ClipRRect(
                                 child: CustomImage(
-                                  height: 200,
+                                  fit: BoxFit.cover,
                                   width: 370,
-                                  image: webLandingController.webLandingContent!.topImage1 ?? "",)),
+                                  height: 200,
+                                  image: webLandingController.webLandingContent!.topImage2 ??"",)),
                           ),
-                          //second image
+                          //third image
+                          Container(
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                              border: Border(
+                                top: BorderSide(width: 2.0, color: Colors.white),
+                                bottom: BorderSide(width: 2.0, color: Colors.white),
+                              ),
+                            ),
+                            child: ClipRRect(
+                              child: CustomImage(
+                                height: 200,
+                                width: 370,
+                                fit: BoxFit.cover,
+                                image: webLandingController.webLandingContent!.topImage3 ?? "",
+                              ),
+                            ),
+                          ),
+                          //fourth image
                           ClipRRect(
-                            borderRadius: const BorderRadius.only(topRight: Radius.circular(12.0)),
+                            borderRadius: const BorderRadius.only(
+                              topRight: Radius.circular(12.0),
+                              bottomRight: Radius.circular(12.0),
+                            ),
                             child: Container(
                               decoration: const BoxDecoration(
                                   color: Colors.white,
                                   border: Border(
                                     top: BorderSide(width: 2.0, color: Colors.white),
                                     right: BorderSide(width: 2.0, color: Colors.white),
+                                    bottom: BorderSide(width: 2.0, color: Colors.white),
                                   ),
                               ),
-
                               child: ClipRRect(
-                                  borderRadius: const BorderRadius.only(topRight: Radius.circular(12.0)),
+                                  borderRadius: const BorderRadius.only(
+                                    topRight: Radius.circular(12.0),
+                                    bottomRight: Radius.circular(12.0),
+                                  ),
                                   child: CustomImage(
                                     fit: BoxFit.cover,
-                                    width: 485,
                                     height: 200,
-                                    image: webLandingController.webLandingContent!.topImage2 ??"",)),
-                            ),
-                          ),
-                          //third image
-
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          const Expanded(flex: 2, child: SizedBox()),
-                          Expanded(
-                            flex: 4,
-                            child: Container(
-                              decoration: const BoxDecoration(
-                                color: Colors.white,
-                                border: Border(
-                                  top: BorderSide(width: 2.0, color: Colors.white),
-                                  right: BorderSide(width: 2.0, color: Colors.white),
-                                  bottom: BorderSide(width: 2.0, color: Colors.white),
-                                  left: BorderSide(width: 2.0, color: Colors.white),
-                                ),
-
-                              ),
-                              child: ClipRRect(
-                                child: CustomImage(
-                                  height: 200,
-                                  width: 200,
-                                  image: webLandingController.webLandingContent!.topImage3 ?? "",
-                                ),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 4,
-                            child: ClipRRect(
-                              borderRadius: const BorderRadius.only(bottomRight: Radius.circular(12.0)),
-                              child: Container(
-                                decoration: const BoxDecoration(
-                                    color: Colors.white,
-                                    border: Border(
-                                      top: BorderSide(width: 2.0, color: Colors.white),
-                                      right: BorderSide(width: 2.0, color: Colors.white),
-                                      bottom: BorderSide(width: 2.0, color: Colors.white),
-
-                                    ),
-                                ),
-                                child: ClipRRect(
-                                    borderRadius: const BorderRadius.only(bottomRight: Radius.circular(12.0)),
-                                    child: CustomImage(
-                                      fit: BoxFit.cover,
-                                      height: 200,
-                                      image: webLandingController.webLandingContent!.topImage4 ?? "",),
-                                ),
+                                    width: 370,
+                                    image: webLandingController.webLandingContent!.topImage4 ?? "",),
                               ),
                             ),
                           ),
                         ],
                       ),
-
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: Dimensions.paddingSizeLarge),
+                  ],
                 ),
               ),
             ),
-            Positioned(
-              left: 30.0,
-              bottom: 30.0,
+            const SizedBox(height: Dimensions.paddingSizeDefault),
+            // Location Card - Now below images
+            Center(
               child: Container(
-                height: 250,
-                width: 750,
+                width: 900,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
                   color: const Color(0xffF5F5F5),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    const SizedBox(height: 35.0,),
-                    if(widget.textContent?['web_top_title'] != null && widget.textContent?['web_top_title'] != '')
-                    Padding( padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault),
-                      child: Text(widget.textContent?['web_top_title'] ?? "",
-                        style: robotoBold.copyWith(fontSize: Dimensions.fontSizeOverLarge,color: Colors.black),
-                        maxLines: 1, overflow: TextOverflow.ellipsis,
-                      ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.1),
+                      blurRadius: 10,
+                      offset: const Offset(0, 5),
                     ),
-                    const SizedBox(height: 15.0,),
-                    if(widget.textContent?['web_top_description'] != null && widget.textContent?['web_top_description'] != '')
-                      Padding( padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault),
-                        child: Text(widget.textContent?['web_top_description'] ?? "", maxLines: 1, overflow: TextOverflow.ellipsis,
-                        style: robotoMedium.copyWith(
-                          fontSize: Dimensions.fontSizeDefault,
-                          color: Theme.of(context).disabledColor,
-                        ),
-                                            ),
-                      ),
-                    const Spacer(),
-                    const SizedBox(height: Dimensions.paddingSizeLarge,),
+                  ],
+                ),
+                padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
                     Container(
-                      height: 115,
+                      height: 90,
                       decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.only(
-                          bottomLeft: Radius.circular(Dimensions.radiusDefault),
-                          bottomRight: Radius.circular(Dimensions.radiusDefault),
-                        ),
-                        color: Theme.of(context).hintColor.withValues(alpha: 0.07),
+                        borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
+                        color: Colors.white,
                       ),
 
                       child: CustomShakingWidget(

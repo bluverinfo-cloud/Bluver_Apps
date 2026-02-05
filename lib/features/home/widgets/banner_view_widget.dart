@@ -1,16 +1,9 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:stackfood_multivendor/features/home/controllers/home_controller.dart';
-import 'package:stackfood_multivendor/features/restaurant/screens/restaurant_screen.dart';
-import 'package:stackfood_multivendor/features/splash/controllers/splash_controller.dart';
-import 'package:stackfood_multivendor/features/product/domain/models/basic_campaign_model.dart';
-import 'package:stackfood_multivendor/common/models/product_model.dart';
-import 'package:stackfood_multivendor/common/models/restaurant_model.dart';
-import 'package:stackfood_multivendor/helper/responsive_helper.dart';
-import 'package:stackfood_multivendor/helper/route_helper.dart';
-import 'package:stackfood_multivendor/util/dimensions.dart';
-import 'package:stackfood_multivendor/util/styles.dart';
-import 'package:stackfood_multivendor/common/widgets/custom_image_widget.dart';
-import 'package:stackfood_multivendor/common/widgets/product_bottom_sheet_widget.dart';
+import 'package:demandium/feature/home/controller/banner_controller.dart';
+import 'package:demandium/feature/splash/controller/splash_controller.dart';
+import 'package:demandium/utils/dimensions.dart';
+import 'package:demandium/utils/styles.dart';
+import 'package:demandium/common/widgets/custom_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
@@ -21,12 +14,12 @@ class BannerViewWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    return GetBuilder<HomeController>(builder: (homeController) {
-      return (homeController.bannerImageList != null && homeController.bannerImageList!.isEmpty) ? const SizedBox() : Container(
+    return GetBuilder<BannerController>(builder: (bannerController) {
+      return (bannerController.banners != null && bannerController.banners!.isEmpty) ? const SizedBox() : Container(
         width: MediaQuery.of(context).size.width,
-        height: GetPlatform.isDesktop ? 500 : 210,
-        padding: const EdgeInsets.only(top: Dimensions.paddingSizeDefault, bottom: Dimensions.paddingSizeSmall),
-        child: homeController.bannerImageList != null ? Column(
+        height: GetPlatform.isDesktop ? 500 : 205,
+        padding: const EdgeInsets.only(top: Dimensions.paddingSizeDefault),
+        child: bannerController.banners != null ? Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             CarouselSlider.builder(
@@ -38,31 +31,26 @@ class BannerViewWidget extends StatelessWidget {
                 disableCenter: true,
                 autoPlayInterval: const Duration(seconds: 7),
                 onPageChanged: (index, reason) {
-                  homeController.setCurrentIndex(index, true);
+                  bannerController.setCurrentIndex(index, true);
                 },
               ),
-              itemCount: homeController.bannerImageList!.isEmpty ? 1 : homeController.bannerImageList!.length,
+              itemCount: bannerController.banners!.isEmpty ? 1 : bannerController.banners!.length,
               itemBuilder: (context, index, _) {
+                String? bannerImage = bannerController.banners![index].bannerImageFullPath;
+                String? resourceType = bannerController.banners![index].resourceType ?? '';
+                String? resourceId = bannerController.banners![index].resourceId ?? '';
+                String? redirectLink = bannerController.banners![index].redirectLink ?? '';
+                String? categoryName = bannerController.banners![index].category?.name ?? '';
+                
                 return InkWell(
                   onTap: () {
-                    if(homeController.bannerDataList![index] is Product) {
-                      Product? product = homeController.bannerDataList![index];
-                      ResponsiveHelper.isMobile(context) ? showModalBottomSheet(
-                        context: context, isScrollControlled: true, backgroundColor: Colors.transparent,
-                        builder: (con) => ProductBottomSheetWidget(product: product),
-                      ) : showDialog(context: context, builder: (con) => Dialog(
-                          child: ProductBottomSheetWidget(product: product)),
-                      );
-                    }else if(homeController.bannerDataList![index] is Restaurant) {
-                      Restaurant restaurant = homeController.bannerDataList![index];
-                      Get.toNamed(
-                        RouteHelper.getRestaurantRoute(restaurant.id),
-                        arguments: RestaurantScreen(restaurant: restaurant),
-                      );
-                    }else if(homeController.bannerDataList![index] is BasicCampaignModel) {
-                      BasicCampaignModel campaign = homeController.bannerDataList![index];
-                      Get.toNamed(RouteHelper.getBasicCampaignRoute(campaign));
-                    }
+                    bannerController.navigateFromBanner(
+                      resourceType,
+                      resourceId,
+                      redirectLink,
+                      resourceId,
+                      categoryName: categoryName,
+                    );
                   },
                   child: Container(
                     decoration: BoxDecoration(
@@ -73,8 +61,8 @@ class BannerViewWidget extends StatelessWidget {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
                       child: GetBuilder<SplashController>(builder: (splashController) {
-                        return CustomImageWidget(
-                          image: '${homeController.bannerImageList![index]}',
+                        return CustomImage(
+                          image: bannerImage ?? '',
                           fit: BoxFit.cover,
                         );
                       },
@@ -88,12 +76,12 @@ class BannerViewWidget extends StatelessWidget {
             const SizedBox(height: Dimensions.paddingSizeExtraSmall),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: homeController.bannerImageList!.map((bnr) {
-                int index = homeController.bannerImageList!.indexOf(bnr);
-                int totalBanner = homeController.bannerImageList!.length;
+              children: bannerController.banners!.map((bnr) {
+                int index = bannerController.banners!.indexOf(bnr);
+                int totalBanner = bannerController.banners!.length;
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 3),
-                  child: index == homeController.currentIndex ? Container(
+                  child: index == bannerController.currentIndex ? Container(
                     decoration: BoxDecoration(color: Theme.of(context).primaryColor, borderRadius: BorderRadius.circular(Dimensions.radiusDefault)),
                     padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
                     child: Text('${(index) + 1}/$totalBanner', style: robotoRegular.copyWith(color: Colors.white, fontSize: 12)),
