@@ -17,12 +17,12 @@ ThemeData light = ThemeData(
     secondary: Color(0xFFFF7918)).copyWith(surface: const Color(0xFFF5F6F8)).copyWith(error: const Color(0xFFE84D4F),
   ),
   popupMenuTheme: const PopupMenuThemeData(color: Colors.white, surfaceTintColor: Colors.white),
-  dialogTheme: const DialogTheme(surfaceTintColor: Colors.white),
+  dialogTheme: const DialogThemeData(surfaceTintColor: Colors.white),
   floatingActionButtonTheme: FloatingActionButtonThemeData(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(500))),
-  bottomAppBarTheme: const BottomAppBarTheme(
+  bottomAppBarTheme: const BottomAppBarThemeData(
     surfaceTintColor: Colors.white, height: 60,
     padding: EdgeInsets.symmetric(vertical: 5),
   ),
   dividerTheme: DividerThemeData(color: const Color(0xFFBABFC4).withValues(alpha: 0.25), thickness: 0.5),
-  tabBarTheme: const TabBarTheme(dividerColor: Colors.transparent),
+  tabBarTheme: const TabBarThemeData(dividerColor: Colors.transparent),
 );
