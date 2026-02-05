@@ -1,34 +1,14 @@
-import 'package:animated_flip_counter/animated_flip_counter.dart';
-import 'package:stackfood_multivendor/features/splash/controllers/splash_controller.dart';
-import 'package:stackfood_multivendor/util/styles.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:demandium/utils/core_export.dart';
 
 class PriceConverter {
-  static String convertPrice(double? price, {double? discount, String? discountType, bool forDM = false, bool isVariation = false}) {
-    if(discount != null && discountType != null){
-      if(discountType == 'amount' && !isVariation) {
-        price = price! - discount;
-      }else if(discountType == 'percent') {
-        price = price! - ((discount / 100) * price);
-      }
-    }
 
-    int digitAfterDecimalPoint = Get.find<SplashController>().configModel!.digitAfterDecimalPoint ?? 2;
-
-    int tempPrice = price!.floor();
-    if((price - tempPrice) == 0) {
-      digitAfterDecimalPoint = 0;
-    }
-
-    bool isRightSide = Get.find<SplashController>().configModel!.currencySymbolDirection == 'right';
-    return '${isRightSide ? '' : '${Get.find<SplashController>().configModel!.currencySymbol!} '}'
-        '${(toFixed(price)).toStringAsFixed(forDM ? 0 : digitAfterDecimalPoint)
-        .replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}'
-        '${isRightSide ? ' ${Get.find<SplashController>().configModel!.currencySymbol!}' : ''}';
+  static String getCurrency() {
+    String currencySymbol = Get.find<SplashController>().configModel.content?.currencySymbol ?? "";
+   return currencySymbol;
   }
 
-  static Widget convertAnimationPrice(double? price, {double? discount, String? discountType, bool forDM = false, TextStyle? textStyle}) {
+  static String convertPrice(double? price, {int ? decimalPointCount,double? discount, String? discountType, bool isShowLongPrice = false}) {
     if(discount != null && discountType != null){
       if(discountType == 'amount') {
         price = price! - discount;
@@ -36,55 +16,114 @@ class PriceConverter {
         price = price! - ((discount / 100) * price);
       }
     }
-    bool isRightSide = Get.find<SplashController>().configModel!.currencySymbolDirection == 'right';
-    return Directionality(
-      textDirection: TextDirection.ltr,
-      child: AnimatedFlipCounter(
-        duration: const Duration(milliseconds: 500),
-        value: toFixed(price!),
-        textStyle: textStyle ?? robotoMedium,
-        fractionDigits: forDM ? 0 : Get.find<SplashController>().configModel!.digitAfterDecimalPoint!,
-        prefix: isRightSide ? '' : Get.find<SplashController>().configModel!.currencySymbol!,
-        suffix: isRightSide ? Get.find<SplashController>().configModel!.currencySymbol! : '',
-      ),
-    );
+    bool isRightSide = Get.find<SplashController>().configModel.content?.currencySymbolPosition == 'right' && Get.find<LocalizationController>().isLtr == true;
+    return isShowLongPrice == true ?
+    '${isRightSide ? '' : getCurrency()}'
+        '${(price!).toStringAsFixed(decimalPointCount ?? int.parse(Get.find<SplashController>().configModel.content!.currencyDecimalPoint!))
+        .replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}'
+        '${isRightSide ? getCurrency() : ''}':
+
+    longToShortPrice('${isRightSide ? '' : getCurrency()}'
+        '${(price!).toStringAsFixed(decimalPointCount ?? int.parse(Get.find<SplashController>().configModel.content!.currencyDecimalPoint!))
+        .replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}'
+        '${isRightSide ? getCurrency() : ''}');
+
   }
 
-
-  static double? convertWithDiscount(double? price, double? discount, String? discountType, {bool isVariation = false}) {
-    if(discountType == 'amount' && !isVariation) {
-      price = price! - discount!;
+  static double convertWithDiscount(double price, double discount, String discountType) {
+    if(discountType == 'amount' || discountType == 'mixed') {
+      price = price - discount;
     }else if(discountType == 'percent') {
-      price = price! - ((discount! / 100) * price);
+      price = price - ((discount / 100) * price);
     }
     return price;
   }
 
-  static double calculation(double amount, double? discount, String type, int quantity) {
+
+  static double calculation(double amount, double discount, String type, int quantity) {
     double calculatedAmount = 0;
     if(type == 'amount') {
-      calculatedAmount = discount! * quantity;
+      calculatedAmount = discount * quantity;
     }else if(type == 'percent') {
-      calculatedAmount = (discount! / 100) * (amount * quantity);
+      calculatedAmount = (discount / 100) * (amount * quantity);
     }
     return calculatedAmount;
   }
 
   static String percentageCalculation(String price, String discount, String discountType) {
-    return '$discount${discountType == 'percent' ? '%' : Get.find<SplashController>().configModel!.currencySymbol} OFF';
+    return '$discount${discountType == 'percent' ? '%' : getCurrency()} ${'off'.tr}';
   }
+  static String percentageOrAmount(String discount, String discountType) {
+    return '$discount${discountType == 'percent' ? '%' : getCurrency()} ${'off'.tr}';  }
 
-  static double toFixed(double val) {
-    num mod = power(10, Get.find<SplashController>().configModel!.digitAfterDecimalPoint!);
-    return (((val * mod).toPrecision(Get.find<SplashController>().configModel!.digitAfterDecimalPoint!)).floor().toDouble() / mod);
-  }
 
-  static int power(int x, int n) {
-    int retval = 1;
-    for (int i = 0; i < n; i++) {
-      retval *= x;
+  static Discount _getDiscount(List<ServiceDiscount>? serviceDiscountList, double? discountAmount, String? discountAmountType) {
+    ServiceDiscount? serviceDiscount = (serviceDiscountList != null && serviceDiscountList.isNotEmpty) ?serviceDiscountList.first : null;
+    if(serviceDiscount != null){
+      num? getDiscount = serviceDiscount.discount?.discountAmount;
+      if(getDiscount! > serviceDiscount.discount!.maxDiscountAmount! && serviceDiscount.discount!.discountType == 'percent') {
+        getDiscount = serviceDiscount.discount!.maxDiscountAmount!;
+      }
+      discountAmount = (discountAmount! + getDiscount);
+      discountAmountType = serviceDiscount.discount!.discountAmountType!;
     }
-    return retval;
+    return Discount(discountAmount: discountAmount, discountAmountType: discountAmountType);
   }
 
+ static Discount discountCalculation(Service service, {bool addCampaign = false}) {
+    double? discountAmount = 0;
+    String? discountAmountType;
+
+    if(service.serviceDiscount != null && service.serviceDiscount!.isNotEmpty) {
+
+      Discount discount =  _getDiscount(service.serviceDiscount, discountAmount, discountAmountType);
+      discountAmount = discount.discountAmount;
+
+      discountAmountType = discount.discountAmountType;
+
+
+    }else if(service.campaignDiscount != null && service.campaignDiscount!.isNotEmpty && addCampaign) {
+
+      Discount discount =  _getDiscount(service.campaignDiscount, discountAmount, discountAmountType);
+      discountAmount = discount.discountAmount;
+      discountAmountType = discount.discountAmountType;
+    } else{
+      if(service.category?.categoryDiscount != null && service.category!.categoryDiscount!.isNotEmpty) {
+        Discount discount =  _getDiscount(service.category?.categoryDiscount, discountAmount, discountAmountType);
+        discountAmount = discount.discountAmount;
+        discountAmountType = discount.discountAmountType;
+
+      }else if(service.category?.campaignDiscount != null && service.category!.campaignDiscount!.isNotEmpty && addCampaign){
+
+        Discount discount =  _getDiscount(service.category?.campaignDiscount, discountAmount, discountAmountType);
+        discountAmount = discount.discountAmount;
+        discountAmountType = discount.discountAmountType;
+
+      }
+    }
+
+    return Discount(discountAmount: discountAmount, discountAmountType: discountAmountType);
+  }
+
+  static double getDiscountToAmount(Discount discount, double amount) {
+
+    double amount0 = 0;
+    if(discount.discountAmountType == 'percent') {
+     amount0 = (amount * discount.discountAmount!.toDouble()) / 100.0 ;
+
+     if(amount0 > discount.maxDiscountAmount!.toDouble()) {
+       amount0 = discount.maxDiscountAmount!.toDouble();
+     }
+    }else{
+      amount0 = discount.discountAmount!.toDouble();
+    }
+    return amount0;
+
+  }
+
+  static String longToShortPrice(String price){
+    return price.length > 15 ?
+    "${price.substring(0, 12)}....${price.substring(price.length - 1,price.length)}":
+    price;
+  }
 }

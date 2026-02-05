@@ -1,6 +1,6 @@
-import 'package:stackfood_multivendor/data_source/cache_response.dart';
 
-final database = AppDatabase();
+import 'package:demandium/api/local/cache_response.dart';
+import 'package:demandium/helper/get_di.dart';
 
 class DbHelper{
   static insertOrUpdate({required String id, required CacheResponseCompanion data}) async {
@@ -12,4 +12,6 @@ class DbHelper{
       await database.insertCacheResponse(data);
     }
   }
+
+
 }

@@ -1,15 +1,14 @@
-importScripts("https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js");
-importScripts("https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js");
+importScripts("https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js");
+importScripts("https://www.gstatic.com/firebasejs/8.10.0/firebase-messaging.js");
 
 firebase.initializeApp({
-  apiKey: "AIzaSyAfUV52QfMk_nhNym80Lfd6HV7GZBpmxXg",
-    authDomain: "bluvernew.firebaseapp.com",
-    projectId: "bluvernew",
-    storageBucket: "bluvernew.firebasestorage.app",
-    messagingSenderId: "468760860794",
-    appId: "1:468760860794:web:b90f302e153182703683c3",
-    measurementId: "G-0TXCMCJMKF",
-  databaseURL: "...",
+  apiKey: "AIzaSyBeX8gTe--zSwmCHOdz8rW4zETFiM_DJF0",
+    authDomain: "bluver-d90cc.firebaseapp.com",
+    projectId: "bluver-d90cc",
+    storageBucket: "bluver-d90cc.firebasestorage.app",
+    messagingSenderId: "945987592694",
+    appId: "1:945987592694:web:601ea452e6a402dd1167d7",
+    measurementId: "G-7TXV6RK9J5"
 });
 
 const messaging = firebase.messaging();

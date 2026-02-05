@@ -1,2 +1,0 @@
-C:/Users/ssand/Downloads/Bluver_logo/Delivery man app/android/app/.cxx/RelWithDebInfo/6n1p453x/x86_64/CMakeFiles/edit_cache.dir
-C:/Users/ssand/Downloads/Bluver_logo/Delivery man app/android/app/.cxx/RelWithDebInfo/6n1p453x/x86_64/CMakeFiles/rebuild_cache.dir

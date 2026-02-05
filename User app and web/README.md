@@ -1,18 +1,31 @@
-# Stackfood Multivendor App
+this is read me file !
 
-A new Flutter application.
+issue list:
+https://docs.google.com/document/d/1Py51u0vlNzTWXsUJGpe1Ghbw4kRyVmN1z3Ii5VpW7xc/edit
 
-## Getting Started
+https://docs.google.com/document/d/1ESNtMD2Qwimtwv0pPbcpLEq72J8uN1uN0iVUdL9fQ7M/edit
 
-This project is a starting point for a Flutter application.
+FLUTTER SDK: 3.27.3
 
-This project will run in  [Flutter SDK 3.29.3]
+flutterwave test card:
+Visa Card 3DS authentication 2	4242424242424242	812	3310	01/31	12345
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+This might be overkill, but this is the best way I know to perform the cleanest pod install and ensure that you have no lingering pod cache issues or misconfigured Xcode settings:
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+cd ios
+rm -rf Podfile.lock
+rm -rf Pods
+rm -rf pubspec.lock
+pod repo update
+pod cache clean --all
+pod deintegrate
+pod setup
+pod install --repo-update
+
+
+
+
+flutter build apk --target-platform android-arm,android-arm64,android-x64 --split-per-abi
+
+flutter run -d chrome --web-hostname localhost --web-port 5000

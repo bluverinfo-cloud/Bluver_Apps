@@ -1,244 +1,225 @@
-// import 'package:stackfood_multivendor/features/restaurant/controllers/restaurant_controller.dart';
-// import 'package:stackfood_multivendor/features/splash/controllers/splash_controller.dart';
-// import 'package:stackfood_multivendor/data/model/body/dateMonthBody.dart';
-// import 'package:stackfood_multivendor/features/cart/domain/models/cart_model.dart';
-// import 'package:stackfood_multivendor/common/models/product_model.dart';
-// import 'package:stackfood_multivendor/features/location/domain/models/zone_response_model.dart';
-// import 'package:stackfood_multivendor/helper/address_helper.dart';
-// import 'package:stackfood_multivendor/helper/date_converter.dart';
-// import 'package:stackfood_multivendor/helper/price_converter.dart';
-// import 'package:get/get.dart';
-//
-// class CheckoutHelper {
-//
-//   static double? getDeliveryCharge({required RestaurantController restController, required OrderController orderController, bool returnDeliveryCharge = true, bool returnMaxCodOrderAmount = false}) {
-//
-//     ZoneData zoneData = AddressHelper.getAddressFromSharedPref()!.zoneData!.firstWhere((data) => data.id == restController.restaurant!.zoneId);
-//     double perKmCharge = restController.restaurant!.selfDeliverySystem == 1 ? restController.restaurant!.perKmShippingCharge!
-//         : zoneData.perKmShippingCharge ?? 0;
-//
-//     double minimumCharge = restController.restaurant!.selfDeliverySystem == 1 ? restController.restaurant!.minimumShippingCharge!
-//         :  zoneData.minimumShippingCharge ?? 0;
-//
-//     double? maximumCharge = restController.restaurant!.selfDeliverySystem == 1 ? restController.restaurant!.maximumShippingCharge
-//         : zoneData.maximumShippingCharge;
-//
-//     double deliveryCharge = orderController.distance! * perKmCharge;
-//     double charge = orderController.distance! * perKmCharge;
-//
-//     if(deliveryCharge < minimumCharge) {
-//       deliveryCharge = minimumCharge;
-//       charge = minimumCharge;
-//     }
-//
-//     if(restController.restaurant!.selfDeliverySystem == 0 && orderController.extraCharge != null){
-//       deliveryCharge = deliveryCharge + orderController.extraCharge!;
-//       charge = charge + orderController.extraCharge!;
-//     }
-//
-//     if(maximumCharge != null && deliveryCharge > maximumCharge){
-//       deliveryCharge = maximumCharge;
-//       charge = maximumCharge;
-//     }
-//
-//     if(restController.restaurant!.selfDeliverySystem == 0 && zoneData.increasedDeliveryFeeStatus == 1){
-//       deliveryCharge = deliveryCharge + (deliveryCharge * (zoneData.increasedDeliveryFee!/100));
-//       charge = charge + charge * (zoneData.increasedDeliveryFee!/100);
-//     }
-//
-//     if(restController.restaurant!.selfDeliverySystem == 0 && Get.find<SplashController>().configModel!.freeDeliveryDistance != null && Get.find<SplashController>().configModel!.freeDeliveryDistance! >= orderController.distance!){
-//       deliveryCharge = 0;
-//       charge = 0;
-//     }
-//
-//     if(restController.restaurant!.selfDeliverySystem == 1 && restController.restaurant!.freeDeliveryDistanceStatus! && restController.restaurant!.freeDeliveryDistanceValue! >= orderController.distance!){
-//       deliveryCharge = 0;
-//       charge = 0;
-//     }
-//
-//     double? maxCodOrderAmount;
-//     if(zoneData.maxCodOrderAmount != null) {
-//       maxCodOrderAmount = zoneData.maxCodOrderAmount;
-//     }
-//
-//     if(returnMaxCodOrderAmount) {
-//       return maxCodOrderAmount;
-//     } else {
-//       if(returnDeliveryCharge) {
-//         return deliveryCharge;
-//       }else {
-//         return charge;
-//       }
-//     }
-//
-//   }
-//
-//   static int getSubscriptionQty({required OrderController orderController, required bool restaurantSubscriptionActive}) {
-//     int subscriptionQty = orderController.subscriptionOrder ? 0 : 1;
-//     if(restaurantSubscriptionActive){
-//       if(orderController.subscriptionOrder && orderController.subscriptionRange != null) {
-//         if(orderController.subscriptionType == 'weekly') {
-//           List<int> weekDays = [];
-//           for(int index=0; index<orderController.selectedDays.length; index++) {
-//             if(orderController.selectedDays[index] != null) {
-//               weekDays.add(index + 1);
-//             }
-//           }
-//           subscriptionQty = DateConverter.getWeekDaysCount(orderController.subscriptionRange!, weekDays);
-//         }else if(orderController.subscriptionType == 'monthly') {
-//           List<int> days = [];
-//           for(int index=0; index<orderController.selectedDays.length; index++) {
-//             if(orderController.selectedDays[index] != null) {
-//               days.add(index + 1);
-//             }
-//           }
-//           subscriptionQty = DateConverter.getMonthDaysCount(orderController.subscriptionRange!, days);
-//         }else {
-//           subscriptionQty = orderController.subscriptionRange!.duration.inDays + 1;
-//         }
-//       }
-//     }
-//     return subscriptionQty;
-//   }
-//
-//   static bool canSelectDate({required int duration, required DateTime value}) {
-//     List<DateMonthBody> date = [];
-//     for(int i=0; i<duration; i++){
-//       date.add(DateMonthBody(date: DateTime.now().add(Duration(days: i)).day, month: DateTime.now().add(Duration(days: i)).month));
-//     }
-//     bool status = false;
-//     for(int i=0; i<date.length; i++){
-//       if(date[i].month == value.month && date[i].date == value.day){
-//         status = true;
-//         break;
-//       } else {
-//         status = false;
-//       }
-//     }
-//     return status;
-//   }
-//
-//   static double calculatePrice(List<CartModel>? cartList) {
-//     double price = 0;
-//     double variationPrice = 0;
-//     for (var cartModel in cartList!) {
-//
-//       price = price + (cartModel.product!.price! * cartModel.quantity!);
-//
-//       for(int index = 0; index< cartModel.product!.variations!.length; index++) {
-//         for(int i=0; i<cartModel.product!.variations![index].variationValues!.length; i++) {
-//           if(cartModel.variations![index][i]!) {
-//             variationPrice += (cartModel.product!.variations![index].variationValues![i].optionPrice! * cartModel.quantity!);
-//           }
-//         }
-//       }
-//     }
-//     return PriceConverter.toFixed(price + variationPrice);
-//   }
-//
-//   static double calculateAddonsPrice(List<CartModel>? cartList) {
-//     double addonPrice = 0;
-//     for (var cartModel in cartList!) {
-//       List<AddOns> addOnList = [];
-//       for (var addOnId in cartModel.addOnIds!) {
-//         for (AddOns addOns in cartModel.product!.addOns!) {
-//           if (addOns.id == addOnId.id) {
-//             addOnList.add(addOns);
-//             break;
-//           }
-//         }
-//       }
-//       for (int index = 0; index < addOnList.length; index++) {
-//         addonPrice = addonPrice + (addOnList[index].price! * cartModel.addOnIds![index].quantity!);
-//       }
-//     }
-//     return PriceConverter.toFixed(addonPrice);
-//   }
-//
-//   static double calculateDiscountPrice(List<CartModel>? cartList, RestaurantController restController, double price, double addOns) {
-//     double? discount = 0;
-//     if(restController.restaurant != null) {
-//       for (var cartModel in cartList!) {
-//         double? dis = (restController.restaurant!.discount != null
-//             && DateConverter.isAvailable(restController.restaurant!.discount!.startTime, restController.restaurant!.discount!.endTime))
-//             ? restController.restaurant!.discount!.discount : cartModel.product!.discount;
-//         String? disType = (restController.restaurant!.discount != null
-//             && DateConverter.isAvailable(restController.restaurant!.discount!.startTime, restController.restaurant!.discount!.endTime))
-//             ? 'percent' : cartModel.product!.discountType;
-//
-//         double d = ((cartModel.product!.price! - PriceConverter.convertWithDiscount(cartModel.product!.price!, dis, disType)!) * cartModel.quantity!);
-//         discount = discount! + d;
-//         discount = discount + calculateVariationPrice(restController: restController, cartModel: cartModel);
-//
-//
-//       }
-//
-//       if (restController.restaurant != null && restController.restaurant!.discount != null) {
-//         if (restController.restaurant!.discount!.maxDiscount != 0 && restController.restaurant!.discount!.maxDiscount! < discount!) {
-//           discount = restController.restaurant!.discount!.maxDiscount;
-//         }
-//         if (restController.restaurant!.discount!.minPurchase != 0 && restController.restaurant!.discount!.minPurchase! > (price + addOns)) {
-//           discount = 0;
-//         }
-//       }
-//
-//     }
-//     return PriceConverter.toFixed(discount!);
-//   }
-//
-//   static double calculateVariationPrice({required RestaurantController restController, required CartModel? cartModel}) {
-//     double variationPrice = 0;
-//     double variationDiscount = 0;
-//     if(restController.restaurant != null && cartModel != null) {
-//
-//       double? discount = (restController.restaurant!.discount != null
-//           && DateConverter.isAvailable(restController.restaurant!.discount!.startTime, restController.restaurant!.discount!.endTime))
-//           ? restController.restaurant!.discount!.discount : cartModel.product!.discount;
-//       String? discountType = (restController.restaurant!.discount != null
-//           && DateConverter.isAvailable(restController.restaurant!.discount!.startTime, restController.restaurant!.discount!.endTime))
-//           ? 'percent' : cartModel.product!.discountType;
-//
-//       for(int index = 0; index< cartModel.product!.variations!.length; index++) {
-//         for(int i=0; i<cartModel.product!.variations![index].variationValues!.length; i++) {
-//           if(cartModel.variations![index][i]!) {
-//             variationPrice += (PriceConverter.convertWithDiscount(cartModel.product!.variations![index].variationValues![i].optionPrice!, discount, discountType, isVariation: true)! * cartModel.quantity!);
-//             variationDiscount += (cartModel.product!.variations![index].variationValues![i].optionPrice! * cartModel.quantity!);
-//           }
-//         }
-//       }
-//     }
-//
-//     return variationDiscount - variationPrice;
-//   }
-//
-//   static double calculateSubTotal(double price, double addOnsPrice) {
-//     double subTotal = price + addOnsPrice;
-//     return PriceConverter.toFixed(subTotal);
-//   }
-//
-//   static double calculateOrderAmount(double price, double addOnsPrice, double discount, double couponDiscount) {
-//     double orderAmount = (price - discount) + addOnsPrice - couponDiscount;
-//     return PriceConverter.toFixed(orderAmount);
-//   }
-//
-//   static double calculateTax(bool taxIncluded, double orderAmount, double? taxPercent) {
-//     double tax = 0;
-//     if(taxIncluded){
-//       tax = orderAmount * taxPercent! /(100 + taxPercent);
-//     }else {
-//       tax = PriceConverter.calculation(orderAmount, taxPercent, 'percent', 1);
-//     }
-//     return PriceConverter.toFixed(tax);
-//   }
-//
-//   static double calculateTotal(
-//       double subTotal, double deliveryCharge, double discount, double couponDiscount,
-//       bool taxIncluded, double tax, bool showTips, double tips, double additionalCharge) {
-//
-//     double total = subTotal + deliveryCharge - discount - couponDiscount + (taxIncluded ? 0 : tax)
-//         + (showTips ? tips : 0) + additionalCharge;
-//
-//     return PriceConverter.toFixed(total);
-//   }
-//
-// }
+import 'dart:convert';
+
+import 'package:get/get.dart';
+import 'package:demandium/utils/core_export.dart';
+import 'package:intl/intl.dart';
+
+class CheckoutHelper {
+
+  static final ConfigModel configModel = Get.find<SplashController>().configModel;
+
+  static double getAdditionalCharge(){
+    return Get.find<SplashController>().configModel.content?.additionalCharge == 1 ? configModel.content?.additionalChargeFeeAmount ?? 0.0 : 0.0;
+  }
+
+
+  static bool checkPartialPayment({required double walletBalance, required double bookingAmount }) => walletBalance < bookingAmount;
+
+  static double calculatePaidAmount({required double walletBalance, required double bookingAmount }) => checkPartialPayment(walletBalance: walletBalance, bookingAmount: bookingAmount) ? walletBalance : bookingAmount;
+
+
+
+  static double calculateDiscount({required List<CartModel> cartList, required DiscountType discountType, int daysCount = 1 }){
+    double discount = 0;
+    for (var cartModel in cartList) {
+      if(discountType == DiscountType.general){
+        discount = discount + (cartModel.discountedPrice * daysCount) ;
+      }else if(discountType == DiscountType.campaign){
+        discount = discount + (cartModel.campaignDiscountPrice * daysCount);
+      }
+      else if(discountType == DiscountType.coupon){
+        discount = discount + (cartModel.couponDiscountPrice * daysCount);
+      }
+    }
+    return discount ;
+  }
+
+
+  static double calculateVat({required List<CartModel> cartList, int daysCount = 1}){
+    double vat = 0;
+    for (var cartModel in cartList) {
+      vat = vat + (cartModel.taxAmount * daysCount);
+    }
+    return vat;
+  }
+
+
+  static double calculateSubTotal({required List<CartModel> cartList, int daysCount = 1}){
+    double subTotalPrice  = 0;
+    for (var cartModel in cartList) {
+      subTotalPrice = subTotalPrice + ((cartModel.serviceCost * cartModel.quantity) * daysCount);
+    }
+    return subTotalPrice ;
+  }
+
+  static double calculateGrandTotal({required List<CartModel> cartList , required double referralDiscount, int daysCount = 1, int applicableCouponCount = 1}){
+    return
+      calculateSubTotal(cartList: cartList, daysCount: daysCount)
+      + calculateVat(cartList: cartList, daysCount: daysCount)
+      + getAdditionalCharge()
+      - (calculateDiscount(cartList: cartList, discountType: DiscountType.general, daysCount: daysCount)
+          + calculateDiscount(cartList: cartList, discountType: DiscountType.coupon, daysCount: applicableCouponCount)
+          + calculateDiscount(cartList: cartList, discountType: DiscountType.campaign, daysCount: daysCount)
+          + referralDiscount
+      );
+  }
+
+
+  static double calculateTotalAmountWithoutCoupon({required List<CartModel> cartList}){
+    return
+      calculateSubTotal(cartList: cartList)
+          + calculateVat(cartList: cartList)
+          + getAdditionalCharge()
+          - (calculateDiscount(cartList: cartList, discountType: DiscountType.general)
+          + calculateDiscount(cartList: cartList, discountType: DiscountType.campaign)
+      );
+  }
+
+  static double calculateDueAmount({required List<CartModel> cartList, required bool walletPaymentStatus, required double walletBalance, required double bookingAmount, required double referralDiscount, int daysCount = 1}){
+    return calculateGrandTotal(cartList: cartList, referralDiscount: referralDiscount, daysCount: daysCount) - (walletPaymentStatus ? calculatePaidAmount(walletBalance: walletBalance, bookingAmount: bookingAmount) : 0);
+  }
+
+  static double calculateRemainingWalletBalance({required double walletBalance, required double bookingAmount}){
+    return checkPartialPayment(walletBalance: walletBalance, bookingAmount: bookingAmount)  ? 0 : walletBalance - bookingAmount;
+  }
+
+  static int calculateDaysCountBetweenDateRange(DateTimeRange? dateRange){
+    if(dateRange == null){
+      return 0;
+    }
+    return dateRange.end.difference(dateRange.start).inDays + 1;
+  }
+
+  static int calculateDaysCountBetweenDateRangeWithSpecificSelectedDay(
+      DateTimeRange? dateRange, List<String> selectedDays) {
+
+    if (dateRange == null) {
+      return selectedDays.length;
+    }
+
+    Map<String, int> dayNameToInt = {
+      'monday': DateTime.monday,
+      'tuesday': DateTime.tuesday,
+      'wednesday': DateTime.wednesday,
+      'thursday': DateTime.thursday,
+      'friday': DateTime.friday,
+      'saturday': DateTime.saturday,
+      'sunday': DateTime.sunday,
+    };
+    Set<int> selectedWeekdays = selectedDays
+        .map((dayName) => dayNameToInt[dayName.toLowerCase()])
+        .where((day) => day != null)
+        .cast<int>()
+        .toSet();
+
+    int totalDaysCount = 0;
+
+    for (DateTime currentDate = dateRange.start;
+    !currentDate.isAfter(dateRange.end);
+    currentDate = currentDate.add(const Duration(days: 1))) {
+      if (selectedWeekdays.contains(currentDate.weekday)) {
+        totalDaysCount++;
+      }
+    }
+
+    return totalDaysCount;
+  }
+
+  static String? getRepeatBookingScheduleList({
+    DateTimeRange? dateRange,
+    TimeOfDay? time,
+    RepeatBookingType? repeatBookingType,
+    List<DateTime>? dateTimeList,
+    List<String>? selectedDays,
+  }) {
+    if (repeatBookingType == null) return null;
+
+    DateFormat dateTimeFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
+    List<Map<String, String>> result = [];
+
+    DateTime combineDateAndTime(DateTime date, TimeOfDay time) {
+      return DateTime(date.year, date.month, date.day, time.hour, time.minute, 00);
+    }
+
+    if (repeatBookingType == RepeatBookingType.daily) {
+      if (dateRange == null || time == null) return null;
+
+      for (DateTime currentDate = dateRange.start;
+      !currentDate.isAfter(dateRange.end);
+      currentDate = currentDate.add(const Duration(days: 1))) {
+
+        result.add({"date": dateTimeFormat.format(combineDateAndTime(currentDate, time))});
+      }
+    }
+    else if (repeatBookingType == RepeatBookingType.weekly) {
+      if (selectedDays == null || selectedDays.isEmpty) return null;
+
+      Map<String, int> dayNameToInt = {
+        'monday': DateTime.monday,
+        'tuesday': DateTime.tuesday,
+        'wednesday': DateTime.wednesday,
+        'thursday': DateTime.thursday,
+        'friday': DateTime.friday,
+        'saturday': DateTime.saturday,
+        'sunday': DateTime.sunday,
+      };
+      DateTime startDate = dateRange?.start ?? DateTime.now();
+      DateTime endDate = dateRange?.end ?? DateTime.now().add(const Duration(days: 6));
+
+      for (DateTime currentDate = startDate;
+      !currentDate.isAfter(endDate);
+      currentDate = currentDate.add(const Duration(days: 1))) {
+        int currentWeekday = currentDate.weekday;
+        if (selectedDays.contains(dayNameToInt.keys.firstWhere((dayName) => dayNameToInt[dayName] == currentWeekday,orElse: () => ""))) {
+          result.add({"date": dateTimeFormat.format(combineDateAndTime(currentDate, time!))});
+        }
+      }
+    }
+    else if (repeatBookingType == RepeatBookingType.custom) {
+      if (dateTimeList == null || dateTimeList.isEmpty) return null;
+      dateTimeList.sort((a, b) => a.compareTo(b));
+      for (DateTime dateTime in dateTimeList) {
+        result.add({"date": dateTimeFormat.format(dateTime)});
+      }
+    }
+    return jsonEncode(result);
+  }
+
+  static int? getNumberOfDaysForApplicableCoupon({required  int pickedScheduleDays}){
+
+    int? numOfDays;
+    List<CartModel> carts = Get.find<CartController>().cartList;
+
+    if(carts.isNotEmpty && carts.first.couponCode != null){
+      if( carts.first.couponRemainingUses != null && pickedScheduleDays > carts.first.couponRemainingUses!){
+        numOfDays = carts.first.couponRemainingUses!;
+      }else{
+        numOfDays = pickedScheduleDays;
+      }
+    }
+    return numOfDays;
+  }
+
+  static SignUpBody? getNewUserInfo ({AddressModel? address, String? password, required  bool isCheckedCreateAccount }){
+    if(address !=null && password !=null && !Get.find<AuthController>().isLoggedIn() && isCheckedCreateAccount ){
+      return SignUpBody(
+        fName: address.contactPersonName,
+        lName: "",
+        phone: address.contactPersonNumber,
+        password: password,
+      );
+    }
+    return null;
+  }
+
+
+  static AddressModel? selectedAddressModel ({AddressModel? selectedAddress, AddressModel? pickedAddress}){
+    AddressModel? addressModel;
+    if(selectedAddress !=null && (selectedAddress.zoneId == pickedAddress?.zoneId)){
+      addressModel = selectedAddress ;
+    }else{
+      addressModel = pickedAddress;
+    }
+    return addressModel;
+  }
+}

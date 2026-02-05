@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "468760860794",
-    "project_id": "bluvernew",
-    "storage_bucket": "bluvernew.firebasestorage.app"
+    "project_number": "945987592694",
+    "project_id": "bluver-d90cc",
+    "storage_bucket": "bluver-d90cc.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:468760860794:android:109017a1bff734bd3683c3",
+        "mobilesdk_app_id": "1:945987592694:android:1bd43d8c5bf1b4901167d7",
         "android_client_info": {
           "package_name": "com.bluver.userapp"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCxJA7Hyopymz7WETN4GYAlcEKJeoPuOxk"
+          "current_key": "AIzaSyBpdzc_z2ajO1Ui3VfyX1qsXmsGny4mSs8"
         }
       ],
       "services": {

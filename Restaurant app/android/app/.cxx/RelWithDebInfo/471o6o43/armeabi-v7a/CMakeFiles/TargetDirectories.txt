@@ -1,2 +1,0 @@
-/Users/karna/Downloads/Projects/bluverzipfile/Restaurant app/android/app/.cxx/RelWithDebInfo/471o6o43/armeabi-v7a/CMakeFiles/edit_cache.dir
-/Users/karna/Downloads/Projects/bluverzipfile/Restaurant app/android/app/.cxx/RelWithDebInfo/471o6o43/armeabi-v7a/CMakeFiles/rebuild_cache.dir

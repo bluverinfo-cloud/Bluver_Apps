@@ -1,28 +1,29 @@
-import 'package:stackfood_multivendor/util/app_constants.dart';
 import 'package:flutter/material.dart';
 
 ThemeData light = ThemeData(
-  fontFamily: AppConstants.fontFamily,
-  primaryColor: const Color(0xFF2979FF),
-  secondaryHeaderColor: const Color(0xFF2979FF),
-  disabledColor: const Color(0xFF9B9B9B),
+  useMaterial3: false,
+  fontFamily: 'Roboto',
+  primaryColor: const Color(0xFF0572C2),
+  primaryColorLight: const Color(0xFFF0F4F8),
+  primaryColorDark: const Color(0xff2b3941),
+  secondaryHeaderColor: const Color(0xFF758493),
+
+  disabledColor: const Color(0xFF8797AB),
+  scaffoldBackgroundColor: const Color(0xFFFFFFFF),
   brightness: Brightness.light,
-  hintColor: const Color(0xFF5E6472),
+  hintColor: const Color(0xFFA4A4A4),
+  focusColor: const Color(0xFFFFF9E5),
+  hoverColor: const Color(0xFFF8FAFC),
+  shadowColor:  const Color(0xFFE6E5E5),
   cardColor: Colors.white,
-  shadowColor: Colors.black.withValues(alpha: 0.03),
-  textButtonTheme: TextButtonThemeData(style: TextButton.styleFrom(foregroundColor: const Color(0xFF2979FF))),
-  colorScheme: const ColorScheme.light(primary: Color(0xFF2979FF),
-    tertiary: Color(0xff102F9C),
-    tertiaryContainer: Color(0xff8195DB),
-    secondary: Color(0xFFFF7918)).copyWith(surface: const Color(0xFFF5F6F8)).copyWith(error: const Color(0xFFE84D4F),
-  ),
-  popupMenuTheme: const PopupMenuThemeData(color: Colors.white, surfaceTintColor: Colors.white),
-  dialogTheme: const DialogThemeData(surfaceTintColor: Colors.white),
-  floatingActionButtonTheme: FloatingActionButtonThemeData(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(500))),
-  bottomAppBarTheme: const BottomAppBarThemeData(
-    surfaceTintColor: Colors.white, height: 60,
-    padding: EdgeInsets.symmetric(vertical: 5),
-  ),
-  dividerTheme: DividerThemeData(color: const Color(0xFFBABFC4).withValues(alpha: 0.25), thickness: 0.5),
-  tabBarTheme: const TabBarThemeData(dividerColor: Colors.transparent),
+  textButtonTheme: TextButtonThemeData(style: TextButton.styleFrom(foregroundColor: const Color(
+      0xFF036FBE))),
+  colorScheme: const ColorScheme.light(
+    primary: Color(0xFF0776C7),
+    secondary: Color(0xFFFF9900),
+    tertiary: Color(0xFFd35221),
+    onSecondaryContainer: Color(0xFF02AA05),
+    error: Color(0xFFf76767),
+    onPrimary: Color(0xFFF8FAFC)
+  ).copyWith(surface: const Color(0xffFCFCFC)),
 );

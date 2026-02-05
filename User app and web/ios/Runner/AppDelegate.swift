@@ -2,6 +2,10 @@ import UIKit
 import Flutter
 import GoogleMaps
 import Firebase
+import flutter_downloader
+import FBSDKCoreKit
+import FBSDKLoginKit
+
 
 @main
 @objc class AppDelegate: FlutterAppDelegate {
@@ -9,12 +13,16 @@ import Firebase
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
-    FirebaseApp.configure()
-    GMSServices.provideAPIKey("AIzaSyCaCSJ0BZItSyXqBv8vpD1N4WBffJeKhLQ")
-    if #available(iOS 10.0, *) {
-      UNUserNotificationCenter.current().delegate = self as? UNUserNotificationCenterDelegate
-    }
+     FirebaseApp.configure()
+      GMSServices.provideAPIKey("YOUR_MAP_KEY")
     GeneratedPluginRegistrant.register(with: self)
+      FlutterDownloaderPlugin.setPluginRegistrantCallback(registerPlugins)
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
+}
+
+private func registerPlugins(registry: FlutterPluginRegistry) {
+    if (!registry.hasPlugin("FlutterDownloaderPlugin")) {
+       FlutterDownloaderPlugin.register(with: registry.registrar(forPlugin: "FlutterDownloaderPlugin")!)
+    }
 }
